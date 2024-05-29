@@ -11,7 +11,6 @@ type JsonPayload = {
 	body: string;
 	title?: string;
 	metadata?: Record<string, unknown>;
-	expiration?: number;
 };
 
 type Response = {
@@ -45,13 +44,12 @@ export class NoteSharingService {
 		const jsonPayload: JsonPayload = {
 			body: body,
 			title: options?.title,
-			expiration: options?.expiration,
 		};
 
 		const stringPayload = JSON.stringify(jsonPayload);
 
 		const { ciphertext, iv, key } = await encryptString(stringPayload);
-		const res = await this.postNote(ciphertext, iv);
+		const res = await this.postNote(ciphertext, iv, options?.expiration ?? 31);
 		res.view_url += `#${key}`;
 		console.log(`Note shared: ${res.view_url}`);
 		return res;
@@ -72,7 +70,7 @@ export class NoteSharingService {
 		});
 	}
 
-	private async postNote(ciphertext: string, iv: string): Promise<Response> {
+	private async postNote(ciphertext: string, iv: string, expiration: number): Promise<Response> {
 		const res = await requestUrl({
 			url: `${this._url}/api/note`,
 			method: "POST",
@@ -83,6 +81,7 @@ export class NoteSharingService {
 				user_id: this._userId,
 				plugin_version: this._pluginVersion,
 				crypto_version: "v3",
+				expiration: expiration,
 			}),
 		});
 
