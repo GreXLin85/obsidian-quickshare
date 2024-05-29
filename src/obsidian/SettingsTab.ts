@@ -17,6 +17,7 @@ export default class SettingsTab extends PluginSettingTab {
 	private frontmatterSettings: HTMLElement;
 	private hideSelfHosted: boolean;
 	private selfHostedUrl: TextComponent;
+	private expiration: TextComponent;
 
 	constructor(app: App, plugin: NoteSharingPlugin) {
 		super(app, plugin);
@@ -121,6 +122,25 @@ export default class SettingsTab extends PluginSettingTab {
 					})
 			);
 
+		new Setting(containerEl)
+			.setName("Default expiration")
+			.setDesc(
+				"Default expiration in days for shared notes. It can be between 1 and 31."
+			)
+			.addText((text) => {
+				this.expiration = text;
+				text.setPlaceholder("enter number")
+					.setValue(this.plugin.settings.expiration.toString())
+					.onChange(async (value) => {
+						const parsed = parseInt(value);
+						if (isNaN(parsed)) {
+							new Notice("Please enter a number.");
+							return;
+						}
+						this.plugin.settings.expiration = parsed;
+						await this.plugin.saveSettings();
+					});
+			});
 		// Frontmatter settings
 		containerEl.createEl("h2", { text: "Frontmatter options" });
 
