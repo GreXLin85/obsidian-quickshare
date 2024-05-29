@@ -114,7 +114,7 @@ export default class NoteSharingPlugin extends Plugin {
 		});
 	}
 
-	onunload() {}
+	onunload() { }
 
 	async loadSettings() {
 		this.settings = Object.assign(
@@ -189,14 +189,15 @@ export default class NoteSharingPlugin extends Plugin {
 		const title = this.settings.shareFilenameAsTitle
 			? file.basename
 			: undefined;
+		const expiration = this.settings.expiration;
 
 		this.noteSharingService
-			.shareNote(body, { title })
+			.shareNote(body, { title, expiration })
 			.then((res) => {
 				if (this.settings.useFrontmatter) {
 					const datetime = moment().format(
 						this.settings.frontmatterDateFormat ||
-							DEFAULT_SETTINGS.frontmatterDateFormat
+						DEFAULT_SETTINGS.frontmatterDateFormat
 					);
 					setFrontmatterKeys(file, {
 						url: `"${res.view_url}"`,
