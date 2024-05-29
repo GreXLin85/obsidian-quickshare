@@ -4,12 +4,14 @@ import { encryptString } from "./crypto/encryption";
 
 type ShareNoteOptions = {
 	title?: string;
+	expiration?: number;
 };
 
 type JsonPayload = {
 	body: string;
 	title?: string;
 	metadata?: Record<string, unknown>;
+	expiration?: number;
 };
 
 type Response = {
@@ -43,6 +45,7 @@ export class NoteSharingService {
 		const jsonPayload: JsonPayload = {
 			body: body,
 			title: options?.title,
+			expiration: options?.expiration,
 		};
 
 		const stringPayload = JSON.stringify(jsonPayload);
