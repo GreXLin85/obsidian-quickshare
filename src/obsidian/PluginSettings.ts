@@ -8,6 +8,7 @@ export interface PluginSettings {
 	frontmatterDateFormat?: string;
 	shareFilenameAsTitle: boolean;
 	useFsCache: boolean;
+	expiration: number;
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -18,4 +19,5 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	frontmatterDateFormat: "YYYY-MM-DD HH:mm:ss",
 	shareFilenameAsTitle: true,
 	useFsCache: true,
+	expiration: 31
 };
